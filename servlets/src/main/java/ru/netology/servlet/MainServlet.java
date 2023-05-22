@@ -18,6 +18,9 @@ public class MainServlet extends HttpServlet {
   private final Map<String, Map<String, Handler>> handlers = new ConcurrentHashMap<>();
   private static final String PATH = "/api/posts";
   private static final String PATH_WITH_PARAMS = "/api/posts/";
+  private static final String GET = "GET";
+  private static final String POST = "POST";
+  private static final String DELETE= "DELETE";
 
   @Override
   public void init() {
@@ -25,11 +28,11 @@ public class MainServlet extends HttpServlet {
     final PostService service = new PostService(repository);
     controller = new PostController(service);
 
-    addHandler("GET", PATH, (path, req, resp) -> {
+    addHandler(GET, PATH, (path, req, resp) -> {
       controller.all(resp);
       resp.setStatus(HttpServletResponse.SC_OK);
     });
-    addHandler("GET", PATH_WITH_PARAMS, (path, req, resp) -> {
+    addHandler(GET, PATH_WITH_PARAMS, (path, req, resp) -> {
       try {
         controller.getById(getIdByParsePath(path), resp);
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -37,11 +40,11 @@ public class MainServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
       }
     });
-    addHandler("POST", PATH, (path, req, resp) -> {
+    addHandler(POST, PATH, (path, req, resp) -> {
       controller.save(req.getReader(), resp);
       resp.setStatus(HttpServletResponse.SC_OK);
     });
-    addHandler("DELETE", PATH_WITH_PARAMS, (path, req, resp) -> {
+    addHandler(DELETE, PATH_WITH_PARAMS, (path, req, resp) -> {
       try {
         controller.removeById(getIdByParsePath(path), resp);
         resp.setStatus(HttpServletResponse.SC_OK);
