@@ -1,11 +1,9 @@
 package ru.netology.servlet;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.netology.Handler;
 import ru.netology.controller.PostController;
 import ru.netology.exception.NotFoundException;
-import ru.netology.repository.PostRepository;
-import ru.netology.repository.PostRepositoryImpl;
-import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +22,8 @@ public class MainServlet extends HttpServlet {
 
   @Override
   public void init() {
-    final PostRepository repository = new PostRepositoryImpl();
-    final PostService service = new PostService(repository);
-    controller = new PostController(service);
+    final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("ru.netology");
+    controller = context.getBean(PostController.class);
 
     addHandler(GET, PATH, (path, req, resp) -> {
       controller.all(resp);
